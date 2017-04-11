@@ -2,6 +2,9 @@ package nz.ac.aut.ense701.gui;
 
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.JOptionPane;
 import nz.ac.aut.ense701.gameModel.Game;
 import nz.ac.aut.ense701.gameModel.GameEventListener;
@@ -9,26 +12,27 @@ import nz.ac.aut.ense701.gameModel.GameState;
 import nz.ac.aut.ense701.gameModel.MoveDirection;
 
 /*
- * User interface form for Kiwi Island.
- * 
- * @author AS
- * @version July 2011
- */
+* User interface form for Kiwi Island.
+*
+* @author AS
+* @version July 2011
+*/
 
-public class KiwiCountUI 
-    extends javax.swing.JFrame 
-    implements GameEventListener
+public class KiwiCountUI
+        extends javax.swing.JFrame
+        implements GameEventListener, KeyListener
 {
-
+    
     /**
      * Creates a GUI for the KiwiIsland game.
      * @param game the game object to represent with this GUI.
      */
-    public KiwiCountUI(Game game) 
+    public KiwiCountUI(Game game)
     {
         assert game != null : "Make sure game object is created before UI";
         this.game = game;
         setAsGameListener();
+        setKeyListener();
         initComponents();
         initIslandGrid();
         update();
@@ -47,7 +51,7 @@ public class KiwiCountUI
         if ( game.getState() == GameState.LOST )
         {
             JOptionPane.showMessageDialog(
-                    this, 
+                    this,
                     game.getLoseMessage(), "Game over!",
                     JOptionPane.INFORMATION_MESSAGE);
             game.createNewGame();
@@ -55,7 +59,7 @@ public class KiwiCountUI
         else if ( game.getState() == GameState.WON )
         {
             JOptionPane.showMessageDialog(
-                    this, 
+                    this,
                     game.getWinMessage(), "Well Done!",
                     JOptionPane.INFORMATION_MESSAGE);
             game.createNewGame();
@@ -63,17 +67,65 @@ public class KiwiCountUI
         else if (game.messageForPlayer())
         {
             JOptionPane.showMessageDialog(
-                    this, 
+                    this,
                     game.getPlayerMessage(), "Important Information",
-                    JOptionPane.INFORMATION_MESSAGE);   
+                    JOptionPane.INFORMATION_MESSAGE);
         }
     }
     
-     private void setAsGameListener()
+    private void setAsGameListener()
     {
-       game.addGameEventListener(this); 
+        game.addGameEventListener(this);
     }
-     
+    /**
+     * NEW CODE: Arrow keys are added for movement without pushing the N,S,E,W buttons
+     * setKeyListener() ensures that the program will listen for keyboard input. 
+     * The other keyboard inputs are still listened to, but to nothing.
+     * @param arrow
+     */
+    
+    private void setKeyListener(){
+        addKeyListener(this);
+        setFocusable(true);
+        setFocusTraversalKeysEnabled(false);
+    }
+    public void arrowKeys(KeyEvent arrow){
+        int key = arrow.getKeyCode();
+        if(key == KeyEvent.VK_UP){
+            //if the arrow key pushed is the up arrow, then move character up.
+            if(game.isPlayerMovePossible(MoveDirection.NORTH)){
+                game.playerMove(MoveDirection.NORTH);
+            }else{
+                System.out.println("Not enough stamina");
+            }
+        }
+        if(key == KeyEvent.VK_DOWN){
+            //if the arrow key pushed is the down arrow, then move character down.
+            if(game.isPlayerMovePossible(MoveDirection.SOUTH)){
+                game.playerMove(MoveDirection.SOUTH);
+            }else{
+                System.out.println("Not enough stamina");
+            }
+        }
+        if(key == KeyEvent.VK_LEFT){
+            //if the arrow key pushed is the left arrow, then move character left.
+            if(game.isPlayerMovePossible(MoveDirection.WEST)){
+                game.playerMove(MoveDirection.WEST);
+            }else{
+                System.out.println("Not enough stamina");
+            }
+        }
+        if(key == KeyEvent.VK_RIGHT){
+            //if the arrow key pushed is the right arrow, then move character right.
+            if(game.isPlayerMovePossible(MoveDirection.EAST)){
+                game.playerMove(MoveDirection.EAST);
+            }else{
+                System.out.println("Not enough stamina");
+            }
+        }
+    }
+    
+    
     /**
      * Updates the state of the UI based on the state of the game.
      */
@@ -526,32 +578,32 @@ public class KiwiCountUI
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void btnMoveEastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveEastActionPerformed
         game.playerMove(MoveDirection.EAST);
     }//GEN-LAST:event_btnMoveEastActionPerformed
-
+    
     private void btnMoveNorthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveNorthActionPerformed
         game.playerMove(MoveDirection.NORTH);
     }//GEN-LAST:event_btnMoveNorthActionPerformed
-
+    
     private void btnMoveSouthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveSouthActionPerformed
         game.playerMove(MoveDirection.SOUTH);
     }//GEN-LAST:event_btnMoveSouthActionPerformed
-
+    
     private void btnMoveWestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveWestActionPerformed
         game.playerMove(MoveDirection.WEST);
     }//GEN-LAST:event_btnMoveWestActionPerformed
-
+    
     private void btnCollectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCollectActionPerformed
         Object obj = listObjects.getSelectedValue();
         game.collectItem(obj);
     }//GEN-LAST:event_btnCollectActionPerformed
-
+    
     private void btnDropActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDropActionPerformed
         game.dropItem(listInventory.getSelectedValue());
     }//GEN-LAST:event_btnDropActionPerformed
-
+    
     private void listObjectsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listObjectsValueChanged
         Object occ = listObjects.getSelectedValue();
         if ( occ != null )
@@ -561,11 +613,11 @@ public class KiwiCountUI
             listObjects.setToolTipText(game.getOccupantDescription(occ));
         }
     }//GEN-LAST:event_listObjectsValueChanged
-
+    
     private void btnUseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUseActionPerformed
         game.useItem( listInventory.getSelectedValue());
     }//GEN-LAST:event_btnUseActionPerformed
-
+    
     private void listInventoryValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listInventoryValueChanged
         Object item =  listInventory.getSelectedValue();
         btnDrop.setEnabled(true);
@@ -575,7 +627,7 @@ public class KiwiCountUI
             listInventory.setToolTipText(game.getOccupantDescription(item));
         }
     }//GEN-LAST:event_listInventoryValueChanged
-
+    
     private void btnCountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCountActionPerformed
         game.countKiwi();
     }//GEN-LAST:event_btnCountActionPerformed
@@ -623,6 +675,21 @@ public class KiwiCountUI
     private javax.swing.JLabel txtPlayerName;
     private javax.swing.JLabel txtPredatorsLeft;
     // End of variables declaration//GEN-END:variables
-
+    
     private Game game;
+
+    
+    //NEW CODE: these 3 methods tell the program what to do if one of these actions is performed.
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        arrowKeys(e);
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
 }
