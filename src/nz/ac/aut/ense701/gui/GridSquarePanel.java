@@ -1,17 +1,13 @@
 package nz.ac.aut.ense701.gui;
 
 import java.awt.Color;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import nz.ac.aut.ense701.gameModel.Game;
 import nz.ac.aut.ense701.gameModel.Terrain;
 
-/*
- * Panel for representing a single GridSquare of the island on the GUI.
- * 
- * @author AS
- * @version 1.0 - created
- */
 
 public class GridSquarePanel extends javax.swing.JPanel 
 {
@@ -26,7 +22,9 @@ public class GridSquarePanel extends javax.swing.JPanel
         this.game   = game;
         this.row    = row;
         this.column = column;
-        initComponents();
+       
+         
+          initComponents();
     }
 
     /**
@@ -40,7 +38,11 @@ public class GridSquarePanel extends javax.swing.JPanel
         boolean squareExplored = game.isExplored(row, column);
         
         Color      color;
-        
+          if ( !squareExplored && !squareVisible )
+          {
+            lblText.setIcon(new ImageIcon());
+         
+          }
         switch ( terrain )
         {
             case SAND     : color = Color.YELLOW; break;
@@ -53,8 +55,12 @@ public class GridSquarePanel extends javax.swing.JPanel
         
         if ( squareExplored || squareVisible )
         {
-            // Set the text of the JLabel according to the occupant
-            lblText.setText(game.getOccupantStringRepresentation(row,column));
+       
+     
+        
+                        // Set the text of the JLabel according to the occupant
+            lblText.setIcon(new ImageIcon(makeColorTransparent.Maketrans( new ImageIcon(game.getOccupantStringRepresentation(row,column)).getImage())));
+         
             // Set the colour. 
             if ( squareVisible && !squareExplored ) 
             {
@@ -85,18 +91,32 @@ public class GridSquarePanel extends javax.swing.JPanel
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         lblText = new javax.swing.JLabel();
+        jLayeredPane1 = new javax.swing.JLayeredPane();
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("jLabel1");
 
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         setLayout(new java.awt.BorderLayout());
 
         lblText.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         lblText.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblText.setText("content");
         lblText.setOpaque(true);
         add(lblText, java.awt.BorderLayout.CENTER);
+
+        jLayeredPane1.setToolTipText("");
+        jLayeredPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jLayeredPane1.setDebugGraphicsOptions(javax.swing.DebugGraphics.LOG_OPTION);
+        jLayeredPane1.setDoubleBuffered(true);
+        add(jLayeredPane1, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLayeredPane jLayeredPane1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblText;
     // End of variables declaration//GEN-END:variables
     

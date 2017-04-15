@@ -27,6 +27,6 @@ public class Predator extends Fauna
     @Override
     public String getStringRepresentation() 
     {
-        return "P";
+        return "predator.png";
     }    
 }
