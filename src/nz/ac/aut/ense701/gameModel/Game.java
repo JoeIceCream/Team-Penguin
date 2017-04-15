@@ -293,16 +293,16 @@ public class Game
      * @param itemToCount
      * @return true if is an item is a kiwi.
      */
-    public boolean canCount(Object itemToCount)
-    {
-        boolean result = (itemToCount != null)&&(itemToCount instanceof Kiwi);
-        if(result)
-        {
-            Kiwi kiwi = (Kiwi) itemToCount;
-            result = !kiwi.counted();
-        }
-        return result;
-    }
+//    public boolean canCount(Object itemToCount)
+//    {
+//        boolean result = (itemToCount != null)&&(itemToCount instanceof Kiwi);
+//        if(result)
+//        {
+//            Kiwi kiwi = (Kiwi) itemToCount;
+//            result = !kiwi.counted();
+//        }
+//        return result;
+//    }
     /**
      * Is this object usable
      * @param itemToUse
@@ -513,7 +513,9 @@ public class Game
                     
             // Is there a hazard?
             checkForHazard();
-
+            // Is there a Kiwi?
+            checkForKiwi();
+            
             updateGameState();            
         }
         return successfulMove;
@@ -653,6 +655,21 @@ public class Game
             if ( occupant instanceof Hazard )
             {
                handleHazard((Hazard)occupant) ;
+            }
+        }
+    }
+    
+    /**
+     * Added method
+     * Checks if the player has met a kiwi and applies kiwi impact
+     */
+    private void checkForKiwi(){
+        // check if there are kiwis
+        for ( Occupant occupant : island.getOccupants(player.getPosition())  )
+        {
+            if ( occupant instanceof Kiwi )
+            {
+               countKiwi();
             }
         }
     }
