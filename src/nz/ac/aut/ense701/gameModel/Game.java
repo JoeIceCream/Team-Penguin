@@ -3,8 +3,10 @@ package nz.ac.aut.ense701.gameModel;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -790,16 +792,77 @@ public class Game
      * Creates occupants listed in the file and adds them to the island.
      * @param input data from the level file
      */
+  
+    private int RandomPosition()
+         {
+    Random ran1= new Random();
+    int randomnum;
+    randomnum=0;
+    randomnum=ran1.nextInt(MapList.size());
+    System.out.println(randomnum);
+    return randomnum;
+        }
+    
+    private void InitialMapId()
+        {
+    int a=0;
+    int b=0;
+    String c="";
+    while(a<10)    
+    {
+        b=0;
+    while(b<10)
+    {
+        c="";
+        c=a+",";
+                c=c+b;
+        b++;
+        MapList.add(c);
+        
+    }
+    a++;
+    }
+        
+    }
+    
+    private String[] GetMapPosition()
+    {
+    String getpos=MapList.remove(RandomPosition());
+            
+            String[] PastPos= getpos.split(",");
+            
+            return PastPos;
+    }
+           
+    private int FormatInta(String Str)
+    {
+        int trans=0;
+    try {
+    trans = Integer.parseInt(Str);
+} catch (NumberFormatException e) 
+{
+    System.out.println("Format string to int wrong;");
+}
+    return trans;
+    }
+    
     private void setUpOccupants(Scanner input) 
     {
+       
         int numItems = input.nextInt();
+        InitialMapId();
+         System.out.print("check init");
         for ( int i = 0 ; i < numItems ; i++ ) 
         {
             String occType  = input.next();
             String occName  = input.next(); 
             String occDesc  = input.next();
-            int    occRow   = input.nextInt();
-            int    occCol   = input.nextInt();
+              String[] past=new String[2];
+          past  =GetMapPosition();
+         System.out.println("random num"+past[0]+"_"+past[1]);
+            
+            int    occRow   = FormatInta(past[0]);
+            int    occCol   = FormatInta(past[1]);
             Position occPos = new Position(island, occRow, occCol);
             Occupant occupant    = null;
 
@@ -827,19 +890,25 @@ public class Game
                 totalKiwis++;
             }
             else if ( occType.equals("P") )
-            {
+                 {
                 occupant = new Predator(occPos, occName, occDesc);
                 totalPredators++;
-            }
+                }
             else if ( occType.equals("F") )
-            {
+                {
                 occupant = new Fauna(occPos, occName, occDesc);
-            }
+              }
             if ( occupant != null ) island.addOccupant(occPos, occupant);
-        }
+            }
     }    
 
-
+              
+         
+              
+              
+              
+        
+    
     private Island island;
     private Player player;
     private GameState state;
@@ -854,9 +923,7 @@ public class Game
     private String winMessage = "";
     private String loseMessage  = "";
     private String playerMessage  = "";   
-
-    
-
-
-
+    private ArrayList<String> MapList= new ArrayList();
 }
+
+
