@@ -91,7 +91,7 @@ public class KiwiCountUI
     }
     public void arrowKeys(KeyEvent arrow){
         int key = arrow.getKeyCode();
-        if(key == KeyEvent.VK_UP){
+        if(key == KeyEvent.VK_W){
             //if the arrow key pushed is the up arrow, then move character up.
             if(game.isPlayerMovePossible(MoveDirection.NORTH)){
                 game.playerMove(MoveDirection.NORTH);
@@ -99,7 +99,7 @@ public class KiwiCountUI
                 System.out.println("Not enough stamina");
             }
         }
-        if(key == KeyEvent.VK_DOWN){
+        if(key == KeyEvent.VK_S){
             //if the arrow key pushed is the down arrow, then move character down.
             if(game.isPlayerMovePossible(MoveDirection.SOUTH)){
                 game.playerMove(MoveDirection.SOUTH);
@@ -107,7 +107,7 @@ public class KiwiCountUI
                 System.out.println("Not enough stamina");
             }
         }
-        if(key == KeyEvent.VK_LEFT){
+        if(key == KeyEvent.VK_A){
             //if the arrow key pushed is the left arrow, then move character left.
             if(game.isPlayerMovePossible(MoveDirection.WEST)){
                 game.playerMove(MoveDirection.WEST);
@@ -115,7 +115,7 @@ public class KiwiCountUI
                 System.out.println("Not enough stamina");
             }
         }
-        if(key == KeyEvent.VK_RIGHT){
+        if(key == KeyEvent.VK_D){
             //if the arrow key pushed is the right arrow, then move character right.
             if(game.isPlayerMovePossible(MoveDirection.EAST)){
                 game.playerMove(MoveDirection.EAST);
@@ -167,11 +167,8 @@ public class KiwiCountUI
         listObjects.clearSelection();
         listObjects.setToolTipText(null);
         btnCollect.setEnabled(false);
-        // Don't need count button 
-        //btnCount.setEnabled(false);
-        
+     
         // update movement buttons
-        
         btnMoveNorth.setEnabled(game.isPlayerMovePossible(MoveDirection.NORTH));
         btnMoveEast.setEnabled( game.isPlayerMovePossible(MoveDirection.EAST));
         btnMoveSouth.setEnabled(game.isPlayerMovePossible(MoveDirection.SOUTH));
@@ -594,8 +591,6 @@ public class KiwiCountUI
         if ( occ != null )
         {
             btnCollect.setEnabled(game.canCollect(occ));
-            // no more canCount method
-            //btnCount.setEnabled(game.canCount(occ));
             listObjects.setToolTipText(game.getOccupantDescription(occ));
         }
     }//GEN-LAST:event_listObjectsValueChanged
