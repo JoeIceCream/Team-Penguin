@@ -1,5 +1,16 @@
 package nz.ac.aut.ense701.gameModel;
 
+import nz.ac.aut.ense701.gameModel.Food;
+import nz.ac.aut.ense701.gameModel.Game;
+import nz.ac.aut.ense701.gameModel.GameState;
+import nz.ac.aut.ense701.gameModel.Hazard;
+import nz.ac.aut.ense701.gameModel.Island;
+import nz.ac.aut.ense701.gameModel.Item;
+import nz.ac.aut.ense701.gameModel.MoveDirection;
+import nz.ac.aut.ense701.gameModel.Player;
+import nz.ac.aut.ense701.gameModel.Position;
+import nz.ac.aut.ense701.gameModel.Predator;
+import nz.ac.aut.ense701.gameModel.Tool;
 import org.junit.Test;
 
 /**
@@ -89,7 +100,7 @@ public class GameTest extends junit.framework.TestCase
     /**
      * Tests for Accessor methods of Game, excluding those which are wrappers for accessors in other classes.
      * Other class accessors are tested in their test classes.
-     */
+   */
     
     @Test
     public void testGetNumRows(){
@@ -213,8 +224,8 @@ public class GameTest extends junit.framework.TestCase
     }
     /**
      * Test for mutator methods
-     */
-    
+     
+    */
     @Test
     public void testCollectValid(){
         Item food = new Food(playerPosition,"Sandwich", "Yummy",1.0, 1.0,1.0);
@@ -372,7 +383,24 @@ public class GameTest extends junit.framework.TestCase
         assertTrue("Player should be dead.", !player.isAlive());
         assertTrue("Game should be over", game.getState()== GameState.LOST);
     }
-    
+  
+    @Test
+      public void testCheckForKiwi(){ 
+        Position kiwiPosition = new Position(island, playerPosition.getRow()+1, playerPosition.getColumn());
+        Kiwi kiwi = new Kiwi(kiwiPosition, "Kiwi", "Bigbird");
+        System.out.println(playerPosition.getRow()+1);
+        System.out.println(playerPosition.getColumn());
+        island.addOccupant(kiwiPosition, kiwi);
+        game.playerMove(MoveDirection.NORTH);
+        assertTrue("Move valid", game.playerMove(MoveDirection.SOUTH));
+         System.out.println(playerPosition.getRow());
+        System.out.println(playerPosition.getColumn());
+        //Fatal Hazard should count kiwi
+        System.out.println(game.getState()+""+ player.isAlive());
+        assertTrue("Player should be dead.", player.isAlive());
+        assertTrue("Game should be over", game.getState()== GameState.PLAYING);
+    }
+  
     @Test
     public void testPlayerMoveDeadPlayer(){
         player.kill();
@@ -416,7 +444,23 @@ public class GameTest extends junit.framework.TestCase
         //Game not over as there other moves player has enough stamina for
         assertTrue("Game should not be over", game.getState()== GameState.PLAYING);
     }
-    
+     @Test
+    public void TestRandomPosition()
+    {
+    assertEquals ("TestRandomPosition false", game.RandomPosition());
+    }
+         @Test
+    public void TestInitialMapId()
+    {
+        
+    assertTrue ("initialmap false.", game.getMapList().isEmpty());
+    }
+         @Test
+    public void TestFormatInta()
+    {
+        
+    assertEquals ("FormatInta .", game.FormatInta("5"),5);
+    }
     @Test
     public void testCountKiwi()
     {
@@ -428,14 +472,14 @@ public class GameTest extends junit.framework.TestCase
 
 /**
  * Private helper methods
- */
+*/
     
     private boolean trapAllPredators()
     {
         //Firstly player needs a trap
         Tool trap = new Tool(playerPosition,"Trap", "A predator trap",1.0, 1.0);
         game.collectItem(trap);
-        
+     
         //Now player needs to trap all predators
         //Predator 1
         boolean moveOK = playerMoveEast(5);
@@ -443,54 +487,68 @@ public class GameTest extends junit.framework.TestCase
         //Predator 2
         if(moveOK){
             moveOK = playerMoveWest(1);
+        System.out.println("1");
+         
         }
         if(moveOK){
             moveOK = playerMoveSouth(2);
-            game.useItem(trap);
+            game.useItem(trap);   
+        System.out.println("2");
         }
         //Predator 3
         if(moveOK){
-            moveOK = playerMoveWest(2);
+            moveOK = playerMoveWest(2);    
+        System.out.println("3");
         }
         if(moveOK){
-            moveOK = playerMoveSouth(1);
+            moveOK = playerMoveSouth(1);   
+        System.out.println("4");
             game.useItem(trap);
         }
         //Predator 4
         if(moveOK){
-            moveOK = playerMoveWest(3);
+            moveOK = playerMoveWest(3);   
+        System.out.println("5");
         }
         if(moveOK){
-            moveOK = playerMoveSouth(1);
+            moveOK = playerMoveSouth(1);   
+        System.out.println("6");
             game.useItem(trap);
         }
         //Predator 5
         if(moveOK){
-            moveOK = playerMoveEast(1);
+            moveOK = playerMoveEast(1);   
+        System.out.println("7");
         }
         if(moveOK){
-            moveOK = playerMoveSouth(1);
+            moveOK = playerMoveSouth(1);    
             game.useItem(trap);
         }
          //Predator 6
         if(moveOK){
-            moveOK = playerMoveEast(2);
+            moveOK = playerMoveEast(2);   
+        System.out.println("9");
         }
         if(moveOK){
-            moveOK = playerMoveSouth(1);
+            moveOK = playerMoveSouth(1);   
+        System.out.println("10");
             game.useItem(trap);
         }
         //Predator 7
         if(moveOK){
-            moveOK = playerMoveNorth(1);
+            moveOK = playerMoveNorth(1);    
+        System.out.println("11");
         }
         if(moveOK){
-            moveOK = playerMoveEast(3);
+            moveOK = playerMoveEast(3);   
+        System.out.println("12");
         }
         if(moveOK){
-            moveOK = playerMoveSouth(4);
+            moveOK = playerMoveSouth(4);   
+        System.out.println("13");
             game.useItem(trap);
         }
+        System.out.println("14");
         return moveOK;
     }
     
@@ -537,4 +595,5 @@ public class GameTest extends junit.framework.TestCase
         }
         return success;
     }
+    
 }
