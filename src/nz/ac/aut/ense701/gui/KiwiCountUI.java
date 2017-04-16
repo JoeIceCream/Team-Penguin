@@ -1,15 +1,21 @@
 package nz.ac.aut.ense701.gui;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.plaf.basic.BasicProgressBarUI;
 import nz.ac.aut.ense701.gameModel.Game;
 import nz.ac.aut.ense701.gameModel.GameEventListener;
 import nz.ac.aut.ense701.gameModel.GameState;
 import nz.ac.aut.ense701.gameModel.MoveDirection;
+import javax.swing.JProgressBar;
+import nz.ac.aut.ense701.gameModel.StaminaJProgressBar;
 
 /*
 * User interface form for Kiwi Island.
@@ -215,7 +221,8 @@ public class KiwiCountUI
         javax.swing.JLabel lblPlayerName = new javax.swing.JLabel();
         txtPlayerName = new javax.swing.JLabel();
         javax.swing.JLabel lblPlayerStamina = new javax.swing.JLabel();
-        progPlayerStamina = new javax.swing.JProgressBar();
+        // Creaate a new object of Stamina Bar
+        progPlayerStamina = new StaminaJProgressBar();
         javax.swing.JLabel lblBackpackWeight = new javax.swing.JLabel();
         progBackpackWeight = new javax.swing.JProgressBar();
         javax.swing.JLabel lblBackpackSize = new javax.swing.JLabel();
