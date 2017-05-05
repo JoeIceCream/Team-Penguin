@@ -1,22 +1,18 @@
 package nz.ac.aut.ense701.gui;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import javax.swing.plaf.basic.BasicProgressBarUI;
 import nz.ac.aut.ense701.gameModel.Game;
 import nz.ac.aut.ense701.gameModel.GameEventListener;
 import nz.ac.aut.ense701.gameModel.GameState;
 import nz.ac.aut.ense701.gameModel.MoveDirection;
-import javax.swing.JProgressBar;
+import nz.ac.aut.ense701.gameModel.Item;
 import nz.ac.aut.ense701.gameModel.StaminaJProgressBar;
-
+import java.awt.event.MouseAdapter;  
+import java.awt.event.MouseEvent;  
 /*
 * User interface form for Kiwi Island.
 *
@@ -28,7 +24,7 @@ public class KiwiCountUI
         extends javax.swing.JFrame
         implements GameEventListener, KeyListener
 {
-    
+    private Item item;
     /**
      * Creates a GUI for the KiwiIsland game.
      * @param game the game object to represent with this GUI.
@@ -157,6 +153,7 @@ public class KiwiCountUI
     /**
      * Updates the state of the UI based on the state of the game.
      */
+    @SuppressWarnings("empty-statement")
     private void update()
     {
         // update the grid square panels
@@ -166,9 +163,27 @@ public class KiwiCountUI
             // all components in the panel are GridSquarePanels,
             // so we can safely cast
             GridSquarePanel gsp = (GridSquarePanel) c;
+            
             gsp.update();
         }
-        
+             Component[] components2 = PanellistInventory.getComponents();
+  int i=0;
+      for(Object value : game.getplayer().getItem()){  
+       InventoryId[i].clean();
+       if(value!=null){
+           InventoryId[i].additem((Item) value);
+               i++;
+               System.out.println(i+""+InventoryId[i]);
+           }; 
+      if(value==null){
+              InventoryId[i].clean();
+              }
+      
+        }
+      InventoryId[i].clean();
+      
+      
+      
         // update player information
         int[] playerValues = game.getPlayerValues();
         txtPlayerName.setText(game.getPlayerName());
@@ -184,9 +199,7 @@ public class KiwiCountUI
         txtPredatorsLeft.setText(Integer.toString(game.getPredatorsRemaining()));
         
         // update inventory list
-        listInventory.setListData(game.getPlayerInventory());
-        listInventory.clearSelection();
-        listInventory.setToolTipText(null);
+       
         btnUse.setEnabled(false);
         btnDrop.setEnabled(false);
         
@@ -213,6 +226,8 @@ public class KiwiCountUI
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        scrlInventory = new javax.swing.JScrollPane();
+        listInventory = new javax.swing.JList();
         javax.swing.JPanel pnlContent = new javax.swing.JPanel();
         pnlIsland = new javax.swing.JPanel();
         javax.swing.JPanel pnlControls = new javax.swing.JPanel();
@@ -237,30 +252,50 @@ public class KiwiCountUI
         btnMoveEast = new javax.swing.JButton();
         btnMoveWest = new javax.swing.JButton();
         javax.swing.JPanel pnlInventory = new javax.swing.JPanel();
-        javax.swing.JScrollPane scrlInventory = new javax.swing.JScrollPane();
-        listInventory = new javax.swing.JList();
         btnDrop = new javax.swing.JButton();
         btnUse = new javax.swing.JButton();
+        PanellistInventory = new javax.swing.JPanel();
         javax.swing.JPanel pnlObjects = new javax.swing.JPanel();
         javax.swing.JScrollPane scrlObjects = new javax.swing.JScrollPane();
         listObjects = new javax.swing.JList();
         btnCollect = new javax.swing.JButton();
 
+        listInventory.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        listInventory.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        listInventory.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listInventory.setLayoutOrientation(javax.swing.JList.VERTICAL_WRAP);
+        listInventory.setVisibleRowCount(3);
+        listInventory.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                listInventoryValueChanged(evt);
+            }
+        });
+        scrlInventory.setViewportView(listInventory);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Kiwi Count");
 
         pnlContent.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        pnlContent.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pnlContentMouseClicked(evt);
+            }
+        });
         pnlContent.setLayout(new java.awt.BorderLayout(10, 0));
 
         javax.swing.GroupLayout pnlIslandLayout = new javax.swing.GroupLayout(pnlIsland);
         pnlIsland.setLayout(pnlIslandLayout);
         pnlIslandLayout.setHorizontalGroup(
             pnlIslandLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 540, Short.MAX_VALUE)
+            .addGap(0, 568, Short.MAX_VALUE)
         );
         pnlIslandLayout.setVerticalGroup(
             pnlIslandLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 618, Short.MAX_VALUE)
+            .addGap(0, 647, Short.MAX_VALUE)
         );
 
         pnlContent.add(pnlIsland, java.awt.BorderLayout.CENTER);
@@ -460,30 +495,6 @@ public class KiwiCountUI
         pnlInventory.setBorder(javax.swing.BorderFactory.createTitledBorder("Inventory"));
         pnlInventory.setLayout(new java.awt.GridBagLayout());
 
-        listInventory.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        listInventory.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        listInventory.setVisibleRowCount(3);
-        listInventory.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                listInventoryValueChanged(evt);
-            }
-        });
-        scrlInventory.setViewportView(listInventory);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        pnlInventory.add(scrlInventory, gridBagConstraints);
-
         btnDrop.setText("Drop");
         btnDrop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -515,6 +526,15 @@ public class KiwiCountUI
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         pnlInventory.add(btnUse, gridBagConstraints);
+
+        PanellistInventory.setToolTipText("1234");
+        PanellistInventory.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        PanellistInventory.setMinimumSize(new java.awt.Dimension(0, 0));
+        PanellistInventory.setLayout(new java.awt.GridLayout(1, 0));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        pnlInventory.add(PanellistInventory, gridBagConstraints);
+        PanellistInventory.getAccessibleContext().setAccessibleDescription("");
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -612,9 +632,14 @@ public class KiwiCountUI
     }//GEN-LAST:event_btnCollectActionPerformed
     
     private void btnDropActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDropActionPerformed
-        game.dropItem(listInventory.getSelectedValue());
+       // game.dropItem(listInventory.getSelectedValue());
+        game.dropItem( NowItem);
+    InventoryId[nowId].clean();
+        
+       
+  update();
     }//GEN-LAST:event_btnDropActionPerformed
-    
+   
     private void listObjectsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listObjectsValueChanged
         Object occ = listObjects.getSelectedValue();
         if ( occ != null )
@@ -625,23 +650,24 @@ public class KiwiCountUI
     }//GEN-LAST:event_listObjectsValueChanged
     
     private void btnUseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUseActionPerformed
-        game.useItem( listInventory.getSelectedValue());
+        //game.useItem( listInventory.getSelectedValue());
+        game.useItem( NowItem);
         
+        InventoryId[nowId].clean();
+     
+        update();
     }//GEN-LAST:event_btnUseActionPerformed
-    
+
     private void listInventoryValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listInventoryValueChanged
-        Object item =  listInventory.getSelectedValue();
-        btnDrop.setEnabled(true);
-        if ( item != null )
-        {
-            btnUse.setEnabled(game.canUse(item));
-            listInventory.setToolTipText(game.getOccupantDescription(item));
-        }
+
     }//GEN-LAST:event_listInventoryValueChanged
-        
-    /**
-     * Creates and initialises the island grid.
-     */
+
+    private void pnlContentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlContentMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_pnlContentMouseClicked
+           
+
+      int id=0;
     private void initIslandGrid()
     {
         // Add the grid
@@ -649,9 +675,11 @@ public class KiwiCountUI
         int columns = game.getNumColumns();
         // set up the layout manager for the island grid panel
         pnlIsland.setLayout(new GridLayout(rows, columns));
+         PanellistInventory.setLayout(new GridLayout(2,4));
         // create all the grid square panels and add them to the panel
         // the layout manager of the panel takes care of assigning them to the
         // the right position
+        
         for ( int row = 0 ; row < rows ; row++ )
         {
             for ( int col = 0 ; col < columns ; col++ )
@@ -659,9 +687,44 @@ public class KiwiCountUI
                 pnlIsland.add(new GridSquarePanel(game, row, col));
             }
         }
+        double backsize = (game.getPlayer()).getMaximumBackpackSize();
+  
+         for ( int row = 0 ; row < 2 ; row++ )
+        {
+            for ( int col = 0 ; col < 4; col++ )
+            {
+                InventoryId[id]= new InventoryPanel(game, game.getPlayer(), row, col);
+                InventoryId[id].jLabel2.addMouseListener(new MouseAdapter()//鼠标监听
+        {
+            int idnum=id;
+              @Override
+            public void mouseReleased(MouseEvent e)
+           {
+              NowItem=InventoryId[idnum].getitem();
+                       checkusebtn();
+                       nowId=idnum;
+            }
+         });
+                PanellistInventory.add(InventoryId[id]);
+                
+                id++;
+            }
+        }   
+     
     }
+        private void checkusebtn()
+         {
+             
+              btnDrop.setEnabled(true);
+         if ( NowItem != null )
+        {
+             btnUse.setEnabled(game.canUse(NowItem));
+            PanellistInventory.setToolTipText(game.getOccupantDescription(game.getcrtItem()));
+        }
+         }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel PanellistInventory;
     private javax.swing.JButton btnCollect;
     private javax.swing.JButton btnDrop;
     private javax.swing.JButton btnMoveEast;
@@ -677,14 +740,16 @@ public class KiwiCountUI
     private javax.swing.JProgressBar progBackpackSize;
     private javax.swing.JProgressBar progBackpackWeight;
     private javax.swing.JProgressBar progPlayerStamina;
+    private javax.swing.JScrollPane scrlInventory;
     private javax.swing.JLabel txtKiwisCounted;
     private javax.swing.JLabel txtPlayerName;
     private javax.swing.JLabel txtPredatorsLeft;
     // End of variables declaration//GEN-END:variables
     
     private Game game;
-
-    
+    private InventoryPanel[] InventoryId=new InventoryPanel[11];
+    private Item NowItem=null;
+    private int nowId; 
     //NEW CODE: these 3 methods tell the program what to do if one of these actions is performed.
     @Override
     public void keyTyped(KeyEvent e) {

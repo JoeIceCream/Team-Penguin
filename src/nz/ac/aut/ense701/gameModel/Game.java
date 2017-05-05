@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
+import nz.ac.aut.ense701.gui.KiwiCountUI;
 
 /**
  * This is the class that knows the Kiwi Island game rules and state
@@ -298,8 +299,10 @@ public class Game
     public boolean canUse(Object itemToUse)
     {
         boolean result = (itemToUse != null)&&(itemToUse instanceof Item);
+         System.out.println("check useful1");
         if(result)
         {
+            System.out.println("check useful2");
             //Food can always be used (though may be wasted)
             // so no need to change result
 
@@ -468,6 +471,8 @@ public class Game
         updateGameState();
         return success;
     }
+    public Item getcrtItem()
+    {return CurrentItem;}
     
     /**
      * Count any kiwis in this position
@@ -862,12 +867,24 @@ public class Game
 {
     System.out.println("Format string to int wrong;");
 }
+ 
     return trans;
     }
+       public Player getplayer()
+    {return player;}
         /**
      * Creates occupants listed in the file and adds them to the island.
+     * @param item
+     * @param CurrentItem
      * @param input data from the level file
      */
+
+   public void setCurrentItem(Item item)
+   {
+   CurrentItem=item;
+   System.out.print(CurrentItem);
+   }
+    
     private void setUpOccupants(Scanner input) 
     {
        
@@ -937,7 +954,8 @@ public class Game
     private int totalKiwis;
     private int predatorsTrapped;
     private Set<GameEventListener> eventListeners;
-    
+    public Item CurrentItem;
+     public int crtrow,crtcolumn;
     private final double MIN_REQUIRED_CATCH = 0.8;
         
     private String winMessage = "";
