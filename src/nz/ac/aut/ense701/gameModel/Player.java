@@ -316,6 +316,7 @@ public class Player
             if ( enoughRoom && notTooHeavy && !additionalTrap)
             {
                 success = backpack.add(item);
+                
                 // when item is collected, it is no longer "on the island"
                 if ( success )
                 {
@@ -337,7 +338,11 @@ public class Player
     {
         return backpack.remove(item);
     }
-    
+    public Set getItem()
+    {
+        return backpack;
+   
+    }
     /**
      * Moves the player over terrain to a new position.
      * 
