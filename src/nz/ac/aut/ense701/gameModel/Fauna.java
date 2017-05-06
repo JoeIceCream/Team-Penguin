@@ -1,6 +1,8 @@
 
 package nz.ac.aut.ense701.gameModel;
 
+import javax.swing.ImageIcon;
+
 
 /**
  * Fauna at this point represents any species that is not a kiwi or a predator on the island.
@@ -30,6 +32,8 @@ public class Fauna extends Occupant
     @Override
     public String getStringRepresentation() 
     {
-          return "F";
+         
+          return "fauna.png";
+          
     }    
 }

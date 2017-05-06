@@ -32,10 +32,12 @@ public class KiwiCountUI
         assert game != null : "Make sure game object is created before UI";
         this.game = game;
         setAsGameListener();
-        setKeyListener();
+        
         initComponents();
         initIslandGrid();
+        setKeyListener();
         update();
+     
     }
     
     /**
@@ -73,7 +75,7 @@ public class KiwiCountUI
         }
     }
     
-    private void setAsGameListener()
+    public void setAsGameListener()
     {
         game.addGameEventListener(this);
     }
@@ -84,41 +86,61 @@ public class KiwiCountUI
      * @param arrow
      */
     
-    private void setKeyListener(){
+    public void setKeyListener(){
         addKeyListener(this);
-        setFocusable(true);
-        setFocusTraversalKeysEnabled(false);
+        setFocusable(true); //can be focus to frame or panel
+        //make sure the focus point it in frame, not in a list or a button, and these should wait ui initial.
+        btnDrop.setFocusable(false);
+        btnCollect.setFocusable(false);
+        btnMoveEast.setFocusable(false);
+        btnMoveSouth.setFocusable(false);
+        btnMoveWest.setFocusable(false);
+        btnMoveNorth.setFocusable(false);
+        listInventory.setFocusable(false);
+        listObjects.setFocusable(false);
+        pnlIsland.setFocusable(true);
+        
+        setFocusTraversalKeysEnabled(false); //make sure focus point will not missed by tab or arrow keys.
+       
     }
     public void arrowKeys(KeyEvent arrow){
         int key = arrow.getKeyCode();
-        if(key == KeyEvent.VK_UP){
+        
+        System.out.println("value");
+        if(key == KeyEvent.VK_W){
             //if the arrow key pushed is the up arrow, then move character up.
             if(game.isPlayerMovePossible(MoveDirection.NORTH)){
                 game.playerMove(MoveDirection.NORTH);
+                System.out.println("north");
             }else{
                 System.out.println("Not enough stamina");
             }
         }
-        if(key == KeyEvent.VK_DOWN){
+        if(key == KeyEvent.VK_S){
             //if the arrow key pushed is the down arrow, then move character down.
             if(game.isPlayerMovePossible(MoveDirection.SOUTH)){
                 game.playerMove(MoveDirection.SOUTH);
+                System.out.println("SOUTH");
             }else{
                 System.out.println("Not enough stamina");
             }
         }
-        if(key == KeyEvent.VK_LEFT){
+        if(key == KeyEvent.VK_A){
             //if the arrow key pushed is the left arrow, then move character left.
             if(game.isPlayerMovePossible(MoveDirection.WEST)){
                 game.playerMove(MoveDirection.WEST);
+               
+                 System.out.println("WEST");
             }else{
                 System.out.println("Not enough stamina");
             }
         }
-        if(key == KeyEvent.VK_RIGHT){
+        if(key == KeyEvent.VK_D){
+             System.out.println("east");
             //if the arrow key pushed is the right arrow, then move character right.
             if(game.isPlayerMovePossible(MoveDirection.EAST)){
                 game.playerMove(MoveDirection.EAST);
+                System.out.println("east");
             }else{
                 System.out.println("Not enough stamina");
             }
@@ -167,8 +189,7 @@ public class KiwiCountUI
         listObjects.clearSelection();
         listObjects.setToolTipText(null);
         btnCollect.setEnabled(false);
-        btnCount.setEnabled(false);
-        
+     
         // update movement buttons
         btnMoveNorth.setEnabled(game.isPlayerMovePossible(MoveDirection.NORTH));
         btnMoveEast.setEnabled( game.isPlayerMovePossible(MoveDirection.EAST));
@@ -217,7 +238,6 @@ public class KiwiCountUI
         javax.swing.JScrollPane scrlObjects = new javax.swing.JScrollPane();
         listObjects = new javax.swing.JList();
         btnCollect = new javax.swing.JButton();
-        btnCount = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Kiwi Count");
@@ -548,22 +568,6 @@ public class KiwiCountUI
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         pnlObjects.add(btnCollect, gridBagConstraints);
 
-        btnCount.setText("Count");
-        btnCount.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCountActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        pnlObjects.add(btnCount, gridBagConstraints);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -609,13 +613,13 @@ public class KiwiCountUI
         if ( occ != null )
         {
             btnCollect.setEnabled(game.canCollect(occ));
-            btnCount.setEnabled(game.canCount(occ));
             listObjects.setToolTipText(game.getOccupantDescription(occ));
         }
     }//GEN-LAST:event_listObjectsValueChanged
     
     private void btnUseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUseActionPerformed
         game.useItem( listInventory.getSelectedValue());
+        
     }//GEN-LAST:event_btnUseActionPerformed
     
     private void listInventoryValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listInventoryValueChanged
@@ -627,11 +631,7 @@ public class KiwiCountUI
             listInventory.setToolTipText(game.getOccupantDescription(item));
         }
     }//GEN-LAST:event_listInventoryValueChanged
-    
-    private void btnCountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCountActionPerformed
-        game.countKiwi();
-    }//GEN-LAST:event_btnCountActionPerformed
-    
+        
     /**
      * Creates and initialises the island grid.
      */
@@ -656,7 +656,6 @@ public class KiwiCountUI
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCollect;
-    private javax.swing.JButton btnCount;
     private javax.swing.JButton btnDrop;
     private javax.swing.JButton btnMoveEast;
     private javax.swing.JButton btnMoveNorth;
@@ -682,6 +681,7 @@ public class KiwiCountUI
     //NEW CODE: these 3 methods tell the program what to do if one of these actions is performed.
     @Override
     public void keyTyped(KeyEvent e) {
+        
     }
 
     @Override
@@ -691,5 +691,6 @@ public class KiwiCountUI
 
     @Override
     public void keyReleased(KeyEvent e) {
+       
     }
 }

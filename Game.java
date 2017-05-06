@@ -288,8 +288,21 @@ public class Game
         return result;
     }
     
-
-    
+    /**
+     * Is this object a countable kiwi
+     * @param itemToCount
+     * @return true if is an item is a kiwi.
+     */
+    public boolean canCount(Object itemToCount)
+    {
+        boolean result = (itemToCount != null)&&(itemToCount instanceof Kiwi);
+        if(result)
+        {
+            Kiwi kiwi = (Kiwi) itemToCount;
+            result = !kiwi.counted();
+        }
+        return result;
+    }
     /**
      * Is this object usable
      * @param itemToUse
@@ -383,16 +396,7 @@ public class Game
             // player has picked up an item: remove from grid square
             island.removeOccupant(player.getPosition(), (Item)item);
             
-            /*
-            ___________________collect items is prevent tools or transpotator tools,these tools can not be use__________________________________
-            if(is preventtool){
-            set sunburnprevent=1
-            }
-            if(is transpotator)
-            {
-            set percentstaminacost=0.5;
-            }
-            */
+            
             // everybody has to know about the change
             notifyGameEventListeners();
         }      
@@ -509,7 +513,7 @@ public class Game
                     
             // Is there a hazard?
             checkForHazard();
-            CheckForKiwi();
+
             updateGameState();            
         }
         return successfulMove;
@@ -643,26 +647,12 @@ public class Game
      */
     private void checkForHazard()
     {
-     
         //check if there are hazards
         for ( Occupant occupant : island.getOccupants(player.getPosition())  )
         {
             if ( occupant instanceof Hazard )
             {
                handleHazard((Hazard)occupant) ;
-            }
-        }
-    }
-    
-        private void CheckForKiwi()
-    {
-     
-        //check if there are hazards
-        for ( Occupant occupant : island.getOccupants(player.getPosition())  )
-        {
-            if ( occupant instanceof Kiwi )
-            {
-               countKiwi();
             }
         }
     }
@@ -690,9 +680,6 @@ public class Game
             double impact = hazard.getImpact();
             // Impact is a reduction in players energy by this % of Max Stamina
             double reduction = player.getMaximumStaminaLevel() * impact;
-               /*
-        _____________if prevent________
-        */
             player.reduceStamina(reduction);
             // if stamina drops to zero: player is dead
             if (player.getStaminaLevel() <= 0.0) {
@@ -801,28 +788,26 @@ public class Game
         island.updatePlayerPosition(player);
     }
 
-
-  /*
-    use random function to get a position in initialmapid
-    */
+    /**
+     * Creates occupants listed in the file and adds them to the island.
+     * @param input data from the level file
+     */
+  
     private int RandomPosition()
          {
     Random ran1= new Random();
     int randomnum;
     randomnum=0;
     randomnum=ran1.nextInt(MapList.size());
+    System.out.println(randomnum);
     return randomnum;
         }
-    /*
-    InitialMapId, used for random tiles.
-    this will add all position into a arraylist.
-    */
+    
     private void InitialMapId()
         {
     int a=0;
     int b=0;
     String c="";
-    MapList.clear();
     while(a<10)    
     {
         b=0;
@@ -830,7 +815,7 @@ public class Game
     {
         c="";
         c=a+",";
-        c=c+b;
+                c=c+b;
         b++;
         MapList.add(c);
         
@@ -839,9 +824,7 @@ public class Game
     }
         
     }
-    /*
-    get random postion.
-    */
+    
     private String[] GetMapPosition()
     {
     String getpos=MapList.remove(RandomPosition());
@@ -850,9 +833,7 @@ public class Game
             
             return PastPos;
     }
-           /*
-    transform string to int;
-    */
+           
     private int FormatInta(String Str)
     {
         int trans=0;
@@ -864,15 +845,13 @@ public class Game
 }
     return trans;
     }
-        /**
-     * Creates occupants listed in the file and adds them to the island.
-     * @param input data from the level file
-     */
+    
     private void setUpOccupants(Scanner input) 
     {
        
         int numItems = input.nextInt();
         InitialMapId();
+         System.out.print("check init");
         for ( int i = 0 ; i < numItems ; i++ ) 
         {
             String occType  = input.next();
@@ -880,6 +859,7 @@ public class Game
             String occDesc  = input.next();
               String[] past=new String[2];
           past  =GetMapPosition();
+         System.out.println("random num"+past[0]+"_"+past[1]);
             
             int    occRow   = FormatInta(past[0]);
             int    occCol   = FormatInta(past[1]);
